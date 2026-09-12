@@ -1,0 +1,33 @@
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local database (SQLite)
+*.sqlite3
+db.sqlite3
+
+# Test caches & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Production static build directory
+staticfiles/
+
+# Environment files (in case you create a .env file later)
+.env
+*.env
+local_settings.py
+
+# Editor & OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
