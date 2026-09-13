@@ -150,6 +150,22 @@
       transform: translateY(0);
     }
 
+    button.btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #formError {
+      display: none;
+      color: #f87171;
+      font-size: 0.85rem;
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+
     #result-card {
       display: none;
       margin-top: 1.75rem;
@@ -302,6 +318,7 @@
         <button class="btn-primary" id="submitBtn" onclick="handleShorten()">
           Shorten URL
         </button>
+        <p id="formError"></p>
       </div>
 
       <div id="result-card">
@@ -336,13 +353,25 @@
   <script>
     let currentShortCode = null;
 
+    function showError(message) {
+      const errorBox = document.getElementById('formError');
+      errorBox.textContent = message;
+      errorBox.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('formError').style.display = 'none';
+    }
+
     async function handleShorten() {
       const urlInput = document.getElementById('longUrl');
       const submitBtn = document.getElementById('submitBtn');
       const longUrl = urlInput.value.trim();
 
+      hideError();
+
       if (!longUrl) {
-        alert('Please enter a valid URL.');
+        showError('Please enter a valid URL.');
         return;
       }
 
@@ -360,19 +389,20 @@
 
         if (response.ok) {
           currentShortCode = data.short_code;
-          
+          urlInput.value = '';
+
           document.getElementById('result-card').style.display = 'block';
           const linkElem = document.getElementById('shortUrlLink');
           linkElem.href = data.short_url;
           linkElem.innerText = data.short_url;
-          
+
           document.getElementById('statCode').innerText = data.short_code;
           document.getElementById('statClicks').innerText = data.clicks;
         } else {
-          alert('Submission error: ' + JSON.stringify(data));
+          showError(data.original_url ? data.original_url[0] : 'Something went wrong. Please check the URL and try again.');
         }
       } catch (err) {
-        alert('Failed to connect to API server.');
+        showError('Failed to connect to the server. Please try again.');
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = 'Shorten URL';
